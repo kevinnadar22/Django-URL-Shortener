@@ -1,0 +1,137 @@
+
+{% extends 'shortener/base.html' %}
+
+{% block title %}Manage Links{% endblock title %}
+{% block favicon %}https://shlink.io/images/shlink-logo-blue.svg{% endblock favicon %}
+{% block content %}
+
+
+<div  class="my-5 container">
+<table class="table ">
+
+
+    <thead>
+        <tr>
+          <th scope="col">No</th>
+          <th scope="col">Link</th>
+          <th scope="col">Alias</th>
+          <th scope="col">View</th>
+          <th scope="col">Long Link</th>
+          <th scope="col">Date Created</th>
+        
+
+        </tr>
+
+      </thead>
+      <tbody>
+
+
+{% for link in links %}
+
+
+
+   
+      <tr>
+
+        <th scope="row">{{forloop.counter}}</th>
+
+        <td> <i class="fa fa-link" aria-hidden="true"></i> <a target="_blank" href="http://{{ request.get_host }}/{{link.alias}}">{{link.alias}}</a> 
+            
+            <img onclick="copy(event)" style="cursor: pointer;" src="https://img.icons8.com/ios-glyphs/20/undefined/copy.png"/> 
+        
+        </td>
+
+        <td>{{link.alias}}</td>
+
+        <td>{{link.views}}</td>
+
+        <td> <a target="_blank" class="long_link" href="{{link.long_url}}">{{link.long_url}}</a> </td>
+
+        <td>{{link.date_created}}</td>
+
+      </tr>
+
+
+
+{% endfor %}
+</tbody>
+</table>
+
+
+<nav aria-label="...">
+    <ul class="pagination">
+
+        <li class="page-item">
+            <a  class="page-link" href="?page=1">First Page</a>
+        
+        </li>
+ {% if page_obj.has_previous %}
+<li class="page-item">
+    <a  class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+
+</li>
+
+
+{% else %}
+
+<li class="page-item disabled">
+    <a class="page-link">Previous</a>
+
+</li>
+
+
+
+{% endif %}
+
+      <li class="page-item"><a class="page-link" href="#">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</a></li>
+
+      
+      {% if page_obj.has_next%}
+      <li class="page-item">
+          <a  class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+      
+      </li>
+      
+      
+      {% else %}
+      
+      <li class="page-item disabled">
+          <a class="page-link">Next</a>
+      
+      </li>
+
+
+    
+      {% endif %}
+
+
+      <li class="page-item">
+        <a  class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last Page</a>
+    
+    </li>
+
+    </ul>
+  </nav>
+
+</div>
+<script>
+
+    const urls = document.getElementsByClassName('long_link')
+
+
+for (const url of urls) {
+    let domain = (new URL(url));
+    domain = domain.hostname.replace('www.','');
+    url.innerText = domain
+}
+
+
+function copy(e) {
+  
+    var text = `http://${window.location.host}/${e.path[1].getElementsByTagName('a')[0].innerText}`
+    navigator.clipboard.writeText(text)
+
+    e.target.src = 'https://img.icons8.com/color/15/undefined/ok--v1.png'
+}
+</script>
+{% endblock content %}

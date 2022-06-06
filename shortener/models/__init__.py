@@ -1,0 +1,1 @@
+from .urls_model import Urls as _Urls

@@ -1,0 +1,53 @@
+
+{% extends 'shortener/base.html' %}
+
+{% block title %}Home Page{% endblock title %}
+{% block favicon %}https://shlink.io/images/shlink-logo-blue.svg{% endblock favicon %}
+{% block content %}
+
+
+<div class="container my-5">
+<form id="myForm" method="post">
+    {% csrf_token %}
+   <div class="form-group">
+     <label for="">Long Url</label>
+     {{ form.long_url }}
+     <small id="helpId" class="form-text text-muted">URL to short</small>
+   </div>
+       
+   <button class="btn btn-primary">Submit</button>
+ 
+   
+
+<div style="display: none;" id="short_url" class="alert alert-primary my-3" role="alert">
+  
+</div>
+
+   </form>
+</div>
+
+
+{% if alias %}
+{{ alias }}
+{% endif %}
+
+<script type="text/javascript">
+    $(document).on('submit','#myForm',function(e){
+      e.preventDefault();
+  
+      $.ajax({
+        type:'POST',
+        url:'/create/url/',
+        data:{
+          long_url:$('#id_long_url').val(),
+          csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function(data){
+        document.getElementById("short_url").style.display = 'block'; 
+          $('#short_url').html(`Short URL: <a target="_blank" href="http://${window.location.host}/${data}">https://${window.location.host}/${data}</a>`)
+        }
+      });
+    });
+  </script>
+
+{% endblock content %}
